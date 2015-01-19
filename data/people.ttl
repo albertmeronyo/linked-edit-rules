@@ -1,0 +1,102 @@
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+@prefix eg: <http://example.org/ns#> .
+
+@prefix sdmx-attribute: <http://purl.org/linked-data/sdmx/2009/attribute#> .
+@prefix sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#> .
+@prefix sdmx-code: <http://purl.org/linked-data/sdmx/2009/code#> .
+
+eg:dataset-people a qb:DataSet ;
+		  dct:title       "Random people"@en ;
+		  rdfs:label      "Rnadom people"@en ;
+		  qb:structure    eg:dsd-people ;  
+		  sdmx-attribute:unitMeasure <http://dbpedia.org/resource/Year> ;
+		  sdmx-attribute:unitMeasure <http://dbpedia.org/resource/Meter> ;
+		  qb:slice eg:slice1 
+.
+
+eg:sliceByAdults a qb:SliceKey ;
+		 rdfs:label "Slice by adults"@en;
+		 rdfs:comment "Slice by grouping adults together"@en;
+		 qb:componentProperty eg:agegroup .
+
+eg:sliceByNonAdults a qb:SliceKey ;
+		 rdfs:label "Slice by non-adults"@en;
+		 rdfs:comment "Slice by grouping children and elderly together"@en;
+		 qb:componentProperty eg:agegroup .
+
+
+eg:dsd-people a qb:DataStructureDefinition ;
+	      qb:component
+	      [ qb:dimension sdmx-dimension:age ;
+	      	qb:order     1 ],
+	      [ qb:dimension eg:agegroup ;
+	        qb:order     2 ],
+	      [ qb:dimension eg:height ;
+	        qb:order     3 ],
+	      [ qb:dimension sdmx-dimension:civilStatus ;
+	        qb:order     4 ];
+	      qb:component
+	      [ qb:measure eg:yearsmarried ];
+	      qb:sliceKey eg:sliceByAdults , eg:sliceByNonAdults 
+.
+
+eg:o1 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      sdmx-dimension:age 21 ;
+      eg:agegroup eg:adult ;
+      eg:height 6.0 ;
+      sdmx-dimension:civilStatus sdmx-code:status-S ;
+      eg:yearsMarried -1 ;
+.
+
+eg:o2 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      sdmx-dimension:age 2 ;
+      eg:agegroup eg:child ;
+      eg:height 3 ;
+      sdmx-dimension:civilStatus sdmx-code:status-M ;
+      eg:yearsMarried 0 ;
+.
+
+eg:o3 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      sdmx-dimension:age 18 ;
+      eg:agegroup eg:adult ;
+      eg:height 5.7 ;
+      sdmx-dimension:civilStatus sdmx-code:status-M ;
+      eg:yearsMarried 20 ;
+.
+
+eg:o4 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      sdmx-dimension:age 221 ;
+      eg:agegroup eg:elderly ;
+      eg:height 5 ;
+      sdmx-dimension:civilStatus sdmx-code:status-W ;
+      eg:yearsMarried 2 ;
+.
+
+eg:o5 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      sdmx-dimension:age 34 ;
+      eg:agegroup eg:child ;
+      eg:height -7 ;
+      sdmx-dimension:civilStatus sdmx-code:status-M ;
+      eg:yearsMarried 3 ;
+.
+
+eg:slice1 a qb:Slice ;
+	  qb:sliceStructure eg:sliceByAdults ;
+	  eg:agegroup eg:adult ;
+	  qb:observation eg:o1, eg:o3
+.
+
+eg:slice2 a qb:Slice ;
+	  qb:sliceStructure eg:sliceByNonAdults ;
+	  eg:agegroup eg:child , eg:elderly ;
+	  qb:observation eg:o2, eg:o4, eg:o5
+.
