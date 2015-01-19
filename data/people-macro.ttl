@@ -1,0 +1,39 @@
+@prefix rule: <tag:stardog:api:rule:> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#> .
+@prefix leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/> .
+@prefix ler: <http://bit.ly/linked-edit-rules#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix eg: <http://example.org/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# macro1: check that heights of adults and non-adults follow different distributions
+
+leri:macro1 a rule:SPARQLRule, ler:EditRule ;
+   rule:content """
+       PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
+       PREFIX eg: <http://example.org/ns#>	
+       PREFIX qb: <http://purl.org/linked-data/cube#> 
+       PREFIX sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#>
+       PREFIX ler: <http://bit.ly/linked-edit-rules#>
+       PREFIX stardog: <tag:stardog:api:> 
+     IF {
+       ?x a qb:Slice .
+       ?x qb:sliceStructure eg:sliceByAdults .
+       ?y a qb:Slice .
+       ?y qb:sliceStructure eg:sliceByNonAdults .
+       FILTER(stardog:R('wilcox.test', ?x, ?y, eg:height) <= 0.05)
+     }
+     THEN {
+       ?x ler:inconsistentWith leri:macro1 .
+       ?y ler:inconsistentWith leri:macro1 .
+     }
+   """;
+   ler:scope qb:Observation ;
+   ler:component sdmx-dimension:age, eg:agegroup ;
+   rdfs:label "dist(X) != dist(Y), X heights of adults, Y heights of non-adults";
+   rdfs:comment "Heights of adults and non-adults must follow different distributions" ;   
+   dc:creator <http://www.albertmeronyo.org/> ;
+   dc:date "2015-01-08T16:03:40+01:00"^^xsd:dateTime
+.
