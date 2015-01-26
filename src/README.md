@@ -17,8 +17,8 @@ QBsistent also requires the Java/R Interface (JRI) to execute Linked Macro-Edits
 1. Unzip Stardog anywhere (`$STARDOG_HOME`) and copy the license file to `$STARDOG_HOME/bin/`
 2. Make sure the Stardog server works: `./$STARDOG_HOME/bin/stardog-admin server start; ./$STARDOG_HOME/bin/stardog-admin server stop`
 3. If you plan to use Linked Macro-Edits, and hence the [Stardog-R integration extension](https://github.com/albertmeronyo/stardog-r), you need to add the following lines to the script `$STARDOG_HOME/bin/stardog-admin`:
-   3.1. Make Stardog aware of where your R install lives: `export R_HOME="/usr/lib/R"` (Linux), or `export R_HOME="/Library/Frameworks/R.framework/Resources"` (MacOS X)
-   3.2. Make Stardog aware of where your JRI shared libraries live. This can be achieved in [many ways](http://www.chilkatsoft.com/java-loadLibrary-MacOSX.asp). Recommended: in Linux, modify the LD_LIBRARY_PATH environment variable (add `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/R/site-library/rJava/jri` using your valid JRI path to `$STARDOG_HOME/bin/stardog-admin`; in MacOS X, it's easier to symlink the library `libjri.so` in your Java library path (you can get your Java library path by `System.out.println(System.getProperty("java.library.path"));`).
+   1. Make Stardog aware of where your R install lives: `export R_HOME="/usr/lib/R"` (Linux), or `export R_HOME="/Library/Frameworks/R.framework/Resources"` (MacOS X)
+   2. Make Stardog aware of where your JRI shared libraries live. This can be achieved in [many ways](http://www.chilkatsoft.com/java-loadLibrary-MacOSX.asp). Recommended: in Linux, modify the LD_LIBRARY_PATH environment variable (add `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/R/site-library/rJava/jri` using your valid JRI path to `$STARDOG_HOME/bin/stardog-admin`; in MacOS X, it's easier to symlink the library `libjri.so` in your Java library path (you can get your Java library path by `System.out.println(System.getProperty("java.library.path"));`).
 4. Install Python's SPARQLWrapper module: `pip install SPARQLWrapper`
 
 ## Configuration
