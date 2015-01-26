@@ -1,4 +1,7 @@
-# Linked Edit Rules
+<center><img src="http://lod.cedar-project.nl/linked-edit-rules/img/LER-logo-web.png" style="max-width:50%"></a></center>
+
+Copyright © 2014, 2015 Albert Meroño Peñuela, DANS / VU University Amsterdam
+
 Linked Edit Rules: a methodology to publish, link, combine and execute edit rules on the Web as Linked Data to verify consistency of statistical datasets.
 
 See http://www.linkededitrules.org/
