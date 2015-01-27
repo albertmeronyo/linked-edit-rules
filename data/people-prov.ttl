@@ -1,0 +1,13 @@
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Activity> .
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/2000/01/rdf-schema#label> "Consistency check" .
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/ns/prov#wasAssociatedWith> <http://stardog.com/> .
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/ns/prov#startedAtTime> "2015-01-27T10:34:54.596+01:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/ns/prov#used> <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/o4> .
+<urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> <http://www.w3.org/ns/prov#used> <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/num3> .
+<urn:uuid:87af54ca-7b83-47e3-8382-c67bef2fae25> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/oa#Annotation> .
+<urn:uuid:87af54ca-7b83-47e3-8382-c67bef2fae25> <http://www.w3.org/ns/prov#wasGeneratedBy> <urn:uuid:8459b553-fdae-4b9e-8ffe-2283bdc1a83e> .
+<urn:uuid:87af54ca-7b83-47e3-8382-c67bef2fae25> <http://www.w3.org/ns/prov#generatedAtTime> "2015-01-27T10:34:54.596+01:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<urn:uuid:87af54ca-7b83-47e3-8382-c67bef2fae25> <http://www.w3.org/ns/oa#hasBody> <urn:uuid:56d18d95-3a68-4546-a467-c606f4ae7394> .
+<urn:uuid:87af54ca-7b83-47e3-8382-c67bef2fae25> <http://www.w3.org/ns/oa#hasTarget> <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/o4> .
+<urn:uuid:56d18d95-3a68-4546-a467-c606f4ae7394> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+<urn:uuid:56d18d95-3a68-4546-a467-c606f4ae7394> <http://bit.ly/linked-edit-rules#inconsistentWith> <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/num3> .
