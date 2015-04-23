@@ -1,0 +1,35 @@
+@prefix rule: <tag:stardog:api:rule:> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#> .
+@prefix leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/> .
+@prefix ler: <http://bit.ly/linked-edit-rules#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix eg: <http://example.org/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix cedarterms: <http://bit.ly/cedar#> .
+
+# cedar0: observations with positive counts
+
+leri:cedar0 a rule:SPARQLRule, ler:EditRule ;
+   rule:content """
+       PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
+       PREFIX cedarterms: <http://bit.ly/cedar#>
+       PREFIX qb: <http://purl.org/linked-data/cube#>
+       PREFIX ler: <http://bit.ly/linked-edit-rules#>
+     IF {
+       ?obs a qb:Observation.
+       ?obs cedarterms:population ?pop .
+       FILTER (?pop > 0)
+     }
+     THEN {
+       ?obs ler:inconsistentWith leri:cedar0 .
+     }
+   """;
+   ler:scope qb:Observation ;
+   ler:component cedarterms:population ;
+   rdfs:label "Population counts should be negative (fake rule)"@en ;
+   rdfs:comment "Fake test rule that all observations with positive counts should be inconsistent with"@en ;
+   dc:creator <http://www.albertmeronyo.org/> ;
+   dc:date "2015-04-23T15:00:40+01:00"^^xsd:dateTime
+.
