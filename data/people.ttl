@@ -89,6 +89,16 @@ eg:o5 a qb:Observation ;
       eg:yearsMarried 3 ;
 .
 
+# Observation with missing data
+
+eg:o6 a qb:Observation ;
+      qb:dataset eg:dataset-people ;
+      eg:agegroup eg:child ;
+      eg:height 3.2 ;
+      sdmx-dimension:civilStatus sdmx-code:status-S ;
+      eg:yearsMarried 0 ;
+.
+
 eg:slice1 a qb:Slice ;
 	  qb:sliceStructure eg:sliceByAdults ;
 	  eg:agegroup eg:adult ;
