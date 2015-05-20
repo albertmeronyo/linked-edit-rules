@@ -9,35 +9,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix cedarterms: <http://bit.ly/cedar#> .
 
-# cedar1: observations have one occupation at most
+# priwa1: prices must be decimals
 
-leri:cedar1 a rule:SPARQLRule, ler:EditRule ;
-   rule:content """
-       PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
-       PREFIX cedarterms: <http://bit.ly/cedar#>
-       PREFIX qb: <http://purl.org/linked-data/cube#>
-       PREFIX ler: <http://bit.ly/linked-edit-rules#>
-     IF {
-       ?obs a qb:Observation.
-       ?obs cedarterms:occupationPosition ?pos1 .
-       ?obs cedarterms:occupationPosition ?pos2 .
-       FILTER (?pos1 != ?pos2)
-     }
-     THEN {
-       ?obs ler:inconsistentWith leri:cedar1 .
-     }
-   """;
-   ler:scope qb:Observation ;
-   ler:component cedarterms:occupationPosition ;
-   rdfs:label "One occupation position per observation"@en ;
-   rdfs:comment "A population count can't account for two occupation positions at the same time"@en ;
-   dc:creator <http://www.albertmeronyo.org/> ;
-   dc:date "2015-01-08T16:03:40+01:00"^^xsd:dateTime
-.
-
-# cedar2: population counts must be integers
-
-leri:cedar2 a rule:SPARQLRule, ler:EditRule ;
+leri:priwa1 a rule:SPARQLRule, ler:EditRule ;
    rule:content """
        PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
        PREFIX cedarterms: <http://bit.ly/cedar#>
@@ -47,24 +21,24 @@ leri:cedar2 a rule:SPARQLRule, ler:EditRule ;
      IF {
        ?obs a qb:Observation .
        ?measure a qb:MeasureProperty .
-       ?obs ?measure ?population .
-       FILTER (datatype(?population) != xsd:integer)
+       ?obs ?measure ?price .
+       FILTER (datatype(?price) != xsd:decimal)
      }
      THEN {
-       ?obs ler:inconsistentWith leri:cedar2 .
+       ?obs ler:inconsistentWith leri:priwa1 .
      }
    """;
    ler:scope qb:Observation ;
-   ler:component qb:MeasureProperty, cedarterms:population ;
-   rdfs:label "class(population) == 'integer'"@en ;
-   rdfs:comment "A population count must be an integer number"@en ;
+   ler:component qb:MeasureProperty, cedarterms:price ;
+   rdfs:label "class(price) == 'decimal'"@en ;
+   rdfs:comment "A price must be a decimal number"@en ;
    dc:creator <http://www.albertmeronyo.org/> ;
    dc:date "2015-01-08T16:03:40+01:00"^^xsd:dateTime
 .
 
-# cedar3: population > 0
+# priwa2: price > 0
 
-leri:cedar3 a rule:SPARQLRule, ler:EditRule ;
+leri:priwa2 a rule:SPARQLRule, ler:EditRule ;
    rule:content """
        PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
        PREFIX cedarterms: <http://bit.ly/cedar#>
@@ -74,25 +48,25 @@ leri:cedar3 a rule:SPARQLRule, ler:EditRule ;
      IF {
        ?obs a qb:Observation .
        ?measure a qb:MeasureProperty .
-       ?obs ?measure ?population .
-       FILTER (?population <= 0)
+       ?obs ?measure ?price .
+       FILTER (?price <= 0)
      }
      THEN {
-       ?obs ler:inconsistentWith leri:cedar3 .
+       ?obs ler:inconsistentWith leri:priwa2 .
      }
    """;
    ler:scope qb:Observation ;
-   ler:component qb:MeasureProperty, cedarterms:population ;
-   rdfs:label "population > 0"@en ;
-   rdfs:comment "A population count must be a positive number"@en ;
+   ler:component qb:MeasureProperty, cedarterms:price ;
+   rdfs:label "price > 0"@en ;
+   rdfs:comment "A price must be a positive number"@en ;
    dc:creator <http://www.albertmeronyo.org/> ;
    dc:date "2015-01-08T16:03:40+01:00"^^xsd:dateTime
 .
 
-# cedar4: dataset meets Benford's Law
-# See http://en.wikipedia.org/wiki/Benford%27s_law
+# priwa3: dataset follows a lognormal distribution
+# See http://en.wikipedia.org/wiki/Probability_distribution#Common_probability_distributions
 
-leri:cedar4 a rule:SPARQLRule, ler:EditRule ;
+leri:priwa3 a rule:SPARQLRule, ler:EditRule ;
    rule:content """
        PREFIX leri: <http://lod.cedar-project.nl:8888/linked-edit-rules/resource/>
        PREFIX cedarterms: <http://bit.ly/cedar#>
@@ -103,16 +77,16 @@ leri:cedar4 a rule:SPARQLRule, ler:EditRule ;
      IF {
        ?ds a qb:DataSet .
        ?measure a qb:MeasureProperty .
-       FILTER (stardog:R("benford", ?ds, ?measure) <= 0.05)
+       FILTER (stardog:R("ks.test", "log(rnorm)", ?ds, ?measure) <= 0.05)
      }
      THEN {
-       ?obs ler:inconsistentWith leri:cedar4 .
+       ?obs ler:inconsistentWith leri:priwa3 .
      }
    """;
    ler:scope qb:DataSet ;
-   ler:component qb:MeasureProperty, cedarterms:population ;
-   rdfs:label "benford(ds)$p.value > 0.05'"@en ;
-   rdfs:comment "Population counts must meet Benford's Law"@en ;
+   ler:component qb:MeasureProperty, cedarterms:price ;
+   rdfs:label "ks.test(ds, log(rnorm))$p.value > 0.005"@en ;
+   rdfs:comment "Prices must follow a log-normal distribution"@en ;
    dc:creator <http://www.albertmeronyo.org/> ;
    dc:date "2015-01-08T16:03:40+01:00"^^xsd:dateTime
 .
