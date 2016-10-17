@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
-from subprocess import call
+import requests
+from subprocess import call, check_output
 
 class StardogWrapper():
     def __init__(self, __config):
@@ -15,6 +16,7 @@ class StardogWrapper():
         self.QB_FILE = self.config.get('io', 'qb_file')
         self.SL_QUERY = self.config.get('general', 'sl_query')
         self.REPORT_QUERY = self.config.get('general', 'report_query')
+        self.INBOX_PATH = self.config.get('inbox', 'inbox_path')
         os.chdir(self.HOME_STARDOG)
 
     def removeLockFile(self):
@@ -70,6 +72,15 @@ class StardogWrapper():
         call([self.HOME_STARDOG + 'stardog', 'query', self.DB_NAME + ';reasoning=SL', self.SL_QUERY])
         # Query for the report graph, not in SL mode
         call([self.HOME_STARDOG + 'stardog', 'query', self.DB_NAME, self.REPORT_QUERY])
+        #resp = Popen([self.HOME_STARDOG + 'stardog query ' + self.DB_NAME + ' ' + self.REPORT_QUERY], shell=True, stdout=PIPE)
+        resp = check_output([self.HOME_STARDOG + 'stardog', 'query', self.DB_NAME, self.REPORT_QUERY])
+                
+        # If there is an LDN inbox defined, send the report graph there as a linked data notification
+        if self.INBOX_PATH:
+            print 'Posting LER report graph notification to ' + self.INBOX_PATH
+            r = requests.post(self.INBOX_PATH, resp, headers={'Content-Type': 'text/turtle'})
+            print r.text
+            
 
 if __name__ == '__main__':
     s = StardogWrapper()
