@@ -2,6 +2,7 @@
 import os
 import requests
 from subprocess import call, check_output
+from rdflib import Graph
 
 class StardogWrapper():
     def __init__(self, __config):
@@ -25,7 +26,7 @@ class StardogWrapper():
         '''
         if os.path.isfile(self.HOME_STARDOG + 'system.lock'):
             os.remove(self.HOME_STARDOG + 'system.lock')
-        
+
     def stopServer(self):
         '''
         Stops Stardog server on the background
@@ -59,9 +60,9 @@ class StardogWrapper():
         '''
         Ingest LER rules and cube into running instance from specified file
         '''
-        call([self.HOME_STARDOG + 'stardog-admin', 'db', 'create', '-n', 
-              self.DB_NAME, 
-              self.DATA_PATH + self.QB_FILE, 
+        call([self.HOME_STARDOG + 'stardog-admin', 'db', 'create', '-n',
+              self.DB_NAME,
+              self.DATA_PATH + self.QB_FILE,
               self.DATA_PATH + self.RULE_FILE])
 
     def query(self):
@@ -74,13 +75,30 @@ class StardogWrapper():
         call([self.HOME_STARDOG + 'stardog', 'query', self.DB_NAME, self.REPORT_QUERY])
         #resp = Popen([self.HOME_STARDOG + 'stardog query ' + self.DB_NAME + ' ' + self.REPORT_QUERY], shell=True, stdout=PIPE)
         resp = check_output([self.HOME_STARDOG + 'stardog', 'query', self.DB_NAME, self.REPORT_QUERY])
-                
+
         # If there is an LDN inbox defined, send the report graph there as a linked data notification
         if self.INBOX_PATH:
-            print 'Posting LER report graph notification to ' + self.INBOX_PATH
-            r = requests.post(self.INBOX_PATH, resp, headers={'Content-Type': 'text/turtle'})
+            # Discover inbox location
+            r = requests.get(self.INBOX_PATH)
+            inbox_url = ""
+            try:
+                inbox_url = r.links['http://www.w3.org/ns/ldp#inbox']['url']
+            except:
+                r = requests.get(self.INBOX_PATH, headers={'accept': 'text/turtle; q=1.0, application/ld+json; q=1.0'})
+                g = Graph()
+                try:
+                    g.parse(r.text)
+                    qres = g.query("select distinct ?inbox where {?foo <http://www.w3.org/ns/ldp#inbox> ?inbox . }")
+                    for row in qres:
+                        inbox_url = row
+                except:
+                    print "Could not discover LDN inbox in the specified URL"
+
+            # Send the notification to the discovered inbox
+            print 'Posting LER report graph notification to ' + inbox_url
+            r = requests.post(inbox_url, resp, headers={'Content-Type': 'text/turtle'})
             print r.text
-            
+
 
 if __name__ == '__main__':
     s = StardogWrapper()
